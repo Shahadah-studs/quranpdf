@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A detailed wiki for QuranPDF, a lightweight Madani Mushaf PDF reader.">
+  <title>QuranPDF Wiki</title>
+  <style>
+    :root {
+      --background: #0b0d0f;
+      --surface: #14181c;
+      --surface-light: #1c2328;
+      --border: #2b343b;
+      --text: #edf2f4;
+      --muted: #aab5bb;
+      --gold: #d4af37;
+      --gold-soft: #f1d87a;
+      --link: #9ed8ff;
+      --code: #0a0c0d;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.3);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(212, 175, 55, 0.12), transparent 32rem),
+        var(--background);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.7;
+    }
+
+    a { color: var(--link); }
+    a:hover { color: var(--gold-soft); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 270px minmax(0, 900px);
+      gap: 2rem;
+      width: min(1240px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 4rem;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 1rem;
+      align-self: start;
+      padding: 1.25rem;
+      background: rgba(20, 24, 28, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      margin: 0 0 .25rem;
+      color: var(--gold);
+      font-size: 1.55rem;
+      letter-spacing: .04em;
+    }
+
+    .tagline { margin: 0 0 1.25rem; color: var(--muted); font-size: .9rem; }
+    .sidebar nav a { display: block; padding: .4rem .5rem; border-radius: 6px; text-decoration: none; }
+    .sidebar nav a:hover { background: var(--surface-light); }
+
+    main { min-width: 0; }
+
+    .hero, section {
+      padding: 2rem;
+      margin-bottom: 1.25rem;
+      background: rgba(20, 24, 28, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero { border-top: 4px solid var(--gold); }
+    h1, h2, h3 { line-height: 1.25; }
+    h1 { margin-top: 0; font-size: clamp(2rem, 5vw, 3.5rem); color: var(--gold-soft); }
+    h2 { padding-bottom: .5rem; border-bottom: 1px solid var(--border); color: var(--gold-soft); }
+    h3 { color: var(--gold); }
+    .lead { color: var(--muted); font-size: 1.1rem; }
+
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .card { padding: 1rem; background: var(--surface-light); border: 1px solid var(--border); border-radius: 10px; }
+    .card h3 { margin-top: 0; }
+
+    code, pre { font-family: Consolas, "Courier New", monospace; }
+    code { padding: .15rem .35rem; color: var(--gold-soft); background: var(--code); border-radius: 4px; }
+    pre { overflow-x: auto; padding: 1rem; color: #dce6eb; background: var(--code); border: 1px solid var(--border); border-radius: 8px; }
+
+    .notice { padding: 1rem 1.25rem; border-left: 4px solid var(--gold); background: rgba(212, 175, 55, .1); }
+    li { margin: .35rem 0; }
+    .footer { color: var(--muted); text-align: center; font-size: .9rem; }
+
+    @media (max-width: 800px) {
+      .layout { display: block; width: min(100% - 1rem, 700px); padding-top: 1rem; }
+      .sidebar { position: static; margin-bottom: 1rem; }
+      .sidebar nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: .25rem; }
+      .hero, section { padding: 1.25rem; }
+      .cards { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Wiki navigation">
+      <h2 class="brand">QuranPDF</h2>
+      <p class="tagline">Madani Mushaf reader wiki</p>
+      <nav>
+        <a href="#overview">Overview</a>
+        <a href="#features">Features</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#local">Run locally</a>
+        <a href="#customize">Customize</a>
+        <a href="#deploy">Deployment</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+        <a href="#contribute">Contributing</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="hero" id="overview">
+        <p><a href="./index.html">← Return to the QuranPDF reader</a></p>
+        <h1>QuranPDF Wiki</h1>
+        <p class="lead">A detailed guide to the lightweight QuranPDF website, its structure, behavior, customization points, and deployment workflow.</p>
+        <p>QuranPDF is a static HTML application that displays the Madani Mushaf in an embedded PDF viewer. It is designed to be simple to host, easy to understand, and comfortable to use in a browser.</p>
+        <p><a href="https://github.com/Shahadah-studs/quranpdf">View the source repository</a> · <a href="https://shahadah-studs.github.io/quranpdf/">Open the live site</a></p>
+      </header>
+
+      <section id="features">
+        <h2>Features</h2>
+        <div class="cards">
+          <article class="card"><h3>Focused reader</h3><p>A dark layout keeps attention on the embedded Madani Mushaf PDF.</p></article>
+          <article class="card"><h3>Loading experience</h3><p>A spinner and status message appear while the external document initializes.</p></article>
+          <article class="card"><h3>Subtle motion</h3><p>The title types in and the document panel enters after loading.</p></article>
+          <article class="card"><h3>Static hosting</h3><p>No database, backend, build system, or dependency installation is needed.</p></article>
+        </div>
+      </section>
+
+      <section id="architecture">
+        <h2>How the application works</h2>
+        <ol>
+          <li>The browser loads <code>index.html</code>.</li>
+          <li>The page creates a loading overlay and an iframe for the PDF.</li>
+          <li>The iframe requests the PDF from the Internet Archive URL.</li>
+          <li>When the iframe emits <code>load</code>, JavaScript adds classes to hide the loader, animate the heading, and reveal the reader.</li>
+        </ol>
+        <pre><code>quranpdf/
+├── index.html   # Reader page and inline CSS/JavaScript
+├── README.md    # Repository documentation
+└── wiki.html    # This browser-based wiki</code></pre>
+        <div class="notice"><strong>External document:</strong> the PDF is not stored in this repository. The reader depends on the availability and embedding policy of the external PDF host.</div>
+      </section>
+
+      <section id="local">
+        <h2>Run the project locally</h2>
+        <p>Clone or download the repository, then either open <code>index.html</code> directly or serve the folder over HTTP. An HTTP server is recommended because browser security and PDF behavior can vary with <code>file://</code> URLs.</p>
+        <pre><code>python3 -m http.server 8000</code></pre>
+        <p>Visit <a href="http://localhost:8000/">http://localhost:8000/</a>. The wiki is available at <a href="http://localhost:8000/wiki.html">http://localhost:8000/wiki.html</a>.</p>
+      </section>
+
+      <section id="customize">
+        <h2>Customize the project</h2>
+        <h3>Change the document</h3>
+        <p>Update the <code>src</code> attribute of the iframe in <code>index.html</code> with a stable HTTPS PDF URL. Confirm that the document can legally be linked and that its host allows iframe embedding.</p>
+        <h3>Change the appearance</h3>
+        <p>All reader styles currently live in the <code>&lt;style&gt;</code> block of <code>index.html</code>. The main wiki colors are defined as CSS variables near the top of this file, making the wiki theme easy to adjust.</p>
+        <h3>Improve fallback behavior</h3>
+        <p>A production-ready version can add a direct “Open PDF” link, an iframe timeout message, and a retry button in case the external service is unavailable.</p>
+      </section>
+
+      <section id="deploy">
+        <h2>Deploy with GitHub Pages</h2>
+        <ol>
+          <li>Open repository settings on GitHub.</li>
+          <li>Go to <strong>Pages</strong>.</li>
+          <li>Select the <code>main</code> branch and the repository root as the source.</li>
+          <li>Save, wait for the workflow to finish, and open the generated Pages URL.</li>
+        </ol>
+        <p>The expected pages are <code>/</code> for the reader and <code>/wiki.html</code> for this guide.</p>
+      </section>
+
+      <section id="troubleshooting">
+        <h2>Troubleshooting</h2>
+        <h3>Blank PDF area</h3><p>Open the PDF URL directly, check your connection, and inspect the browser console. The external host may be unavailable or may block embedding.</p>
+        <h3>Loader remains visible</h3><p>The loader is hidden after the iframe load event. If the remote request fails, add a fallback timeout and direct-link message to the page.</p>
+        <h3>Old GitHub Pages content</h3><p>Confirm that Pages deploys from <code>main</code>, wait for deployment completion, and hard-refresh the browser.</p>
+        <h3>Mobile layout issues</h3><p>Test portrait and landscape orientations. Adjust the reader height and add responsive CSS if browser controls leave too little vertical space.</p>
+      </section>
+
+      <section id="contribute">
+        <h2>Contributing and responsible use</h2>
+        <p>Keep changes focused, test in current desktop and mobile browsers, and include screenshots for visual changes. Do not commit credentials or private documents.</p>
+        <p>Before replacing or downloading the PDF, review its copyright, license, attribution, and redistribution terms. This repository currently has no license file, so no additional reuse permission should be assumed for the project code.</p>
+      </section>
+
+      <p class="footer">QuranPDF Wiki · <a href="./README.md">Read the README</a> · <a href="https://github.com/Shahadah-studs/quranpdf">GitHub repository</a></p>
+    </main>
+  </div>
+</body>
+</html>
