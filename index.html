@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuranPDF - Madani Mushaf</title>
     <style>
-        /* Base Styling & Smooth Entry Fade-in */
+        /* Style de base */
         body {
             margin: 0;
             padding: 0;
@@ -19,7 +19,7 @@
         }
 
         /* ========================================== */
-        /*  LOADING SCREEN (SPLASH SCREEN) - 10 SECS  */
+        /*      VRAI ÉCRAN DE CHARGEMENT ACTIF        */
         /* ========================================== */
         .loading-screen {
             position: fixed;
@@ -33,16 +33,22 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            /* L'écran s'estompe après 10 secondes */
-            animation: fadeOutLoader 0.5s ease-in-out 10s forwards;
-            pointer-events: none; /* Permet de cliquer à travers après disparition */
+            opacity: 1;
+            transition: opacity 0.6s ease-in-out, visibility 0.6s;
+        }
+
+        /* Classe ajoutée par JavaScript quand le PDF est prêt */
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
 
         .loader-spinner {
             width: 50px;
             height: 50px;
             border: 3px solid #222;
-            border-top: 3px solid #d4af37; /* Gold */
+            border-top: 3px solid #d4af37; /* Or */
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
@@ -57,7 +63,7 @@
         }
 
         /* ========================================== */
-        /*            MAIN CONTENT STYLING            */
+        /*            CONTENU PRINCIPAL               */
         /* ========================================== */
         header {
             width: 100%;
@@ -77,20 +83,22 @@
         h1 {
             margin: 0;
             font-size: 1.8rem;
-            color: #d4af37; /* Royal Gold */
+            color: #d4af37;
             font-weight: 600;
             letter-spacing: 2px;
             white-space: nowrap;
             overflow: hidden;
-            width: 0; /* Commence invisible */
-            border-right: 3px solid #d4af37; /* Le curseur */
-            /* L'écriture commence à 10.5s (après la disparition complète du loader) */
+            width: 0;
+            border-right: 3px solid #d4af37;
+        }
+
+        /* Déclenché par JavaScript dès que le loader disparaît */
+        .start-typing h1 {
             animation: 
-                typing 2.5s steps(24) 10.5s forwards,
+                typing 2.5s steps(24) forwards,
                 blink 0.75s step-end infinite;
         }
 
-        /* PDF Container Frame with an Animated Subtle Neon Glow */
         .pdf-container {
             width: 95%;
             max-width: 1100px;
@@ -101,9 +109,14 @@
             overflow: hidden;
             transform: translateY(30px);
             opacity: 0;
-            /* Glisse vers le haut à la 11e seconde, pendant l'écriture */
-            animation: slideUpContainer 1s cubic-bezier(0.1, 1, 0.1, 1) 11s forwards,
-                      glowPulse 6s ease-in-out infinite alternate;
+            transition: transform 1s cubic-bezier(0.1, 1, 0.1, 1), opacity 1s;
+        }
+
+        /* Déclenché par JavaScript après l'écriture du titre */
+        .show-pdf .pdf-container {
+            transform: translateY(0);
+            opacity: 1;
+            animation: glowPulse 6s ease-in-out infinite alternate;
         }
 
         iframe {
@@ -113,79 +126,75 @@
         }
 
         /* ========================================== */
-        /*         KEYFRAMES & CSS ANIMATIONS         */
+        /*                ANIMATIONS                  */
         /* ========================================== */
-
-        /* Loader: Rotation du Spinner */
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* Loader: Effet de respiration du texte */
         @keyframes pulseText {
             0%, 100% { opacity: 0.6; }
             50% { opacity: 1; }
         }
 
-        /* Loader: Disparition en fondu */
-        @keyframes fadeOutLoader {
-            to {
-                opacity: 0;
-                visibility: hidden;
-            }
-        }
-
-        /* Site: Effet d'écriture (Typing) */
         @keyframes typing {
             from { width: 0; }
             to { width: 100%; }
         }
 
-        /* Site: Clignotement du curseur textuel */
         @keyframes blink {
             from, to { border-color: transparent; }
             50% { border-color: #d4af37; }
         }
 
-        /* Site: Glissement du bloc PDF vers le haut */
-        @keyframes slideUpContainer {
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        /* Site: Pulsation lumineuse dorée autour du PDF */
         @keyframes glowPulse {
-            0% {
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0px rgba(212, 175, 55, 0);
-            }
-            100% {
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.15);
-            }
+            0% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.15); }
         }
     </style>
 </head>
-<body>
+<body class="">
 
-    
-    <div class="loading-screen">
+    <!-- VRAI écran de chargement -->
+    <div id="loader" class="loading-screen">
         <div class="loader-spinner"></div>
         <div class="loader-text">QuranPDF Loading in progress...</div>
     </div>
 
-  
-    <header>
+    <header id="main-header">
         <div class="typing-container">
             <h1>QuranPDF - Madani Mushaf</h1>
         </div>
     </header>
 
-   
-    <div class="pdf-container">
-        <iframe src="https://dn760104.eu.archive.org/0/items/MadinahQuran/ar_Mushaf_AlMadinah_N_G.pdf"></iframe>
+    <div id="content-viewer" class="pdf-container">
+        <!-- L'iframe charge le fichier en arrière-plan pendant le loader -->
+        <iframe id="quran-iframe" src="https://dn760104.eu.archive.org/0/items/MadinahQuran/ar_Mushaf_AlMadinah_N_G.pdf"></iframe>
     </div>
+
+    <!-- Le Script qui gère la vraie synchronisation -->
+    <script>
+        const iframe = document.getElementById('quran-iframe');
+        const loader = document.getElementById('loader');
+        const body = document.body;
+
+        // Écoute le moment exact où le PDF a fini de charger dans l'iframe
+        iframe.addEventListener('load', () => {
+            // Masque l'écran de chargement
+            loader.classList.add('hidden');
+            
+            // Lance l'effet d'écriture du titre immédiatement après
+            setTimeout(() => {
+                body.classList.add('start-typing');
+            }, 200);
+
+            // Fait glisser le lecteur PDF une fois que le titre a fini de s'écrire (2.5 secondes plus tard)
+            setTimeout(() => {
+                body.classList.add('show-pdf');
+            }, 2700);
+        });
+    </script>
 
 </body>
 </html>
