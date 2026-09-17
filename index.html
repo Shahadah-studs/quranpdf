@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuranPDF - Madani Mushaf</title>
     <style>
-        /* Style de base */
         body {
             margin: 0;
             padding: 0;
@@ -19,7 +18,7 @@
         }
 
         /* ========================================== */
-        /*      VRAI ÉCRAN DE CHARGEMENT ACTIF        */
+        /*    REAL PROGRESS BAR LOADING SCREEN        */
         /* ========================================== */
         .loading-screen {
             position: fixed;
@@ -37,38 +36,59 @@
             transition: opacity 0.6s ease-in-out, visibility 0.6s;
         }
 
-        /* Classe ajoutée par JavaScript quand le PDF est prêt */
         .loading-screen.hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
 
-        .loader-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #222;
-            border-top: 3px solid #d4af37; /* Or */
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+        /* Arabic "Quran" text center logo */
+        .arabic-text {
+            font-size: 3.5rem;
+            color: #d4af37; /* Royal Gold */
+            font-family: 'Traditional Arabic', 'Segoe UI', sans-serif;
+            margin-bottom: 25px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            animation: goldShimmer 2s ease-in-out infinite alternate;
+        }
+
+        /* Progress track border outline container box */
+        .progress-container {
+            width: 250px;
+            height: 6px;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        /* Gold bar lines charging element up */
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #b38f1d 0%, #d4af37 50%, #f3e5ab 100%);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+            animation: fillProgress 4s cubic-bezier(0.1, 0.8, 0.1, 1) infinite;
         }
 
         .loader-text {
-            color: #ffffff;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
-            font-weight: 300;
-            animation: pulseText 1.5s ease-in-out infinite;
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         /* ========================================== */
-        /*            CONTENU PRINCIPAL               */
+        /*            MAIN APP CONTENT CONTAINER      */
         /* ========================================== */
         header {
             width: 100%;
             background: linear-gradient(180deg, #161616 0%, #111111 100%);
-            padding: 20px 0;
+            padding: 15px 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -82,7 +102,7 @@
 
         h1 {
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: #d4af37;
             font-weight: 600;
             letter-spacing: 2px;
@@ -92,7 +112,6 @@
             border-right: 3px solid #d4af37;
         }
 
-        /* Déclenché par JavaScript dès que le loader disparaît */
         .start-typing h1 {
             animation: 
                 typing 2.5s steps(24) forwards,
@@ -102,8 +121,8 @@
         .pdf-container {
             width: 95%;
             max-width: 1100px;
-            height: calc(100vh - 120px);
-            margin: 25px 0;
+            height: calc(100vh - 190px);
+            margin: 15px 0 0 0;
             background: #1a1a1a;
             border-radius: 12px;
             overflow: hidden;
@@ -112,7 +131,6 @@
             transition: transform 1s cubic-bezier(0.1, 1, 0.1, 1), opacity 1s;
         }
 
-        /* Déclenché par JavaScript après l'écriture du titre */
         .show-pdf .pdf-container {
             transform: translateY(0);
             opacity: 1;
@@ -126,16 +144,70 @@
         }
 
         /* ========================================== */
-        /*                ANIMATIONS                  */
+        /*         FIXED AUDIO STATUS CONTROLS BAR    */
         /* ========================================== */
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .audio-player-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(0deg, #0a0a0a 0%, #141414 100%);
+            border-top: 2px solid #222;
+            padding: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            transform: translateY(100%);
+            transition: transform 0.8s cubic-bezier(0.1, 1, 0.1, 1);
         }
 
-        @keyframes pulseText {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+        .show-pdf .audio-player-container {
+            transform: translateY(0);
+        }
+
+        .audio-title {
+            color: #aaa;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .audio-title span {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        audio {
+            width: 90%;
+            max-width: 800px;
+            height: 32px;
+            outline: none;
+        }
+
+        audio::-webkit-media-controls-panel {
+            background-color: #1e1e1e;
+        }
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display {
+            color: #d4af37;
+        }
+
+        /* ========================================== */
+        /*                KEYFRAME TRANSITIONS        */
+        /* ========================================== */
+        @keyframes fillProgress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 98%; }
+        }
+
+        @keyframes goldShimmer {
+            0% { opacity: 0.6; text-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+            100% { opacity: 1; text-shadow: 0 0 25px rgba(212, 175, 55, 0.8); }
         }
 
         @keyframes typing {
@@ -154,49 +226,69 @@
         }
     </style>
 </head>
-<body class="">
+<body>
 
-    <!-- VRAI écran de chargement -->
+    <!-- Loading Screen Container Layout -->
     <div id="loader" class="loading-screen">
-        <div class="loader-spinner"></div>
-        <div class="loader-text">QuranPDF Loading in progress...</div>
+        <div class="arabic-text">القرآن</div>
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        <div class="loader-text">Loading in progress</div>
     </div>
 
+    <!-- Website Header App Title Block -->
     <header id="main-header">
         <div class="typing-container">
             <h1>QuranPDF - Madani Mushaf</h1>
         </div>
     </header>
 
+    <!-- Embedded Live Canvas Frame Viewer -->
     <div id="content-viewer" class="pdf-container">
-        <!-- L'iframe charge le fichier en arrière-plan pendant le loader -->
-        <iframe id="quran-iframe" src="https://dn760104.eu.archive.org/0/items/MadinahQuran/ar_Mushaf_AlMadinah_N_G.pdf"></iframe>
+        <iframe id="quran-iframe" src="https://archive.org"></iframe>
     </div>
-<div style="color:orange; text-align:center; text-decoration:none; button::hover:color:blue;; ">
-    <a href="wiki.html" >Wiki</a>
-</div>
-    <!-- Le Script qui gère la vraie synchronisation -->
+
+    <!-- Media Controls System Dock Bar -->
+    <div class="audio-player-container">
+        <div class="audio-title">Recitation: <span>Mishary Rashid Alafasy (Full Quran)</span></div>
+        <!-- Preloaded but requires manual play click activation -->
+        <audio id="quran-audio" controls preload="auto">
+            <source src="https://mp3quran.net" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <!-- Script Processing Engine Orchestration -->
     <script>
         const iframe = document.getElementById('quran-iframe');
         const loader = document.getElementById('loader');
         const body = document.body;
 
-        // Écoute le moment exact où le PDF a fini de charger dans l'iframe
         iframe.addEventListener('load', () => {
-            // Masque l'écran de chargement
-            loader.classList.add('hidden');
-            
-            // Lance l'effet d'écriture du titre immédiatement après
-            setTimeout(() => {
-                body.classList.add('start-typing');
-            }, 200);
+            // Snaps loading line layout bar directly to full completion state
+            const progressBar = document.querySelector('.progress-bar');
+            progressBar.style.animation = 'none';
+            progressBar.style.width = '100%';
 
-            // Fait glisser le lecteur PDF une fois que le titre a fini de s'écrire (2.5 secondes plus tard)
+            // Brief structural timeout so the interface looks clean
             setTimeout(() => {
-                body.classList.add('show-pdf');
-            }, 2700);
+                loader.classList.add('hidden');
+                
+                // Triggers title letter writing effect
+                setTimeout(() => {
+                    body.classList.add('start-typing');
+                }, 200);
+
+                // Slides up the document player board. Audio remains stopped.
+                setTimeout(() => {
+                    body.classList.add('show-pdf');
+                }, 2700);
+
+            }, 400);
         });
     </script>
 
 </body>
 </html>
+
