@@ -1,96 +1,82 @@
-# QuranPDF — Madani Mushaf
+<div align="center">
+  <a href="https://shahadah-studs.github.io/quranpdf/">
+    <img src="./assets/quranpdf-typing.svg" alt="QuranPDF — animated typing banner" width="900">
+  </a>
+</div>
 
-QuranPDF is a focused, browser-based Quran reader that presents the Madani Mushaf PDF in a clean, dark interface. The project is intentionally lightweight: the page is built with plain HTML, CSS, and JavaScript, while the Quran PDF is displayed through an embedded viewer.
+<h1 align="center">QuranPDF — Madani Mushaf</h1>
 
-**Live site:** https://shahadah-studs.github.io/quranpdf/
+<p align="center">
+  A calm, browser-based reader for the Madani Mushaf PDF, built with plain HTML and hosted on GitHub Pages.
+</p>
 
-**Repository:** https://github.com/Shahadah-studs/quranpdf
+<p align="center">
+  <a href="https://shahadah-studs.github.io/quranpdf/">Open the reader</a> ·
+  <a href="https://shahadah-studs.github.io/quranpdf/wiki.html">Read the wiki</a> ·
+  <a href="https://github.com/Shahadah-studs/quranpdf/issues">Report an issue</a>
+</p>
+
+> **Live update:** The current site includes a full-screen Arabic loading experience with a gold progress bar, a dark/gold reader header, an animated `QuranPDF - Madani Mushaf` title, the embedded Madani Mushaf PDF, and a link to the browser-friendly project wiki.
+
+## What it is
+
+QuranPDF is a lightweight static website for reading the Madani Mushaf in a distraction-free interface. There is no framework, backend, database, build step, or package installation: the project is made from HTML, CSS, and a small amount of JavaScript.
+
+The PDF is embedded from the Internet Archive rather than stored in this repository:
+
+```text
+https://dn760104.eu.archive.org/0/items/MadinahQuran/ar_Mushaf_AlMadinah_N_G.pdf
+```
 
 ## Features
 
-- Full-page PDF reading experience for the Madani Mushaf.
-- Dark interface designed to reduce visual distraction while reading.
-- Gold accent color and subtle animations for a calm, polished presentation.
-- Loading screen shown while the embedded PDF viewer initializes.
-- Animated project title and PDF panel entrance after the viewer loads.
-- Responsive layout that adapts to desktop and mobile browser sizes.
-- No build step, package manager, framework, or server-side code required.
+- Full-page embedded Madani Mushaf PDF reader.
+- Dark interface with gold accents and Arabic branding.
+- Full-screen loading screen with an animated progress bar.
+- Animated heading reveal after the PDF frame loads.
+- Responsive layout for desktop and mobile browsers.
+- Direct link to the project wiki from the live reader.
+- Zero dependencies and simple GitHub Pages deployment.
+- Respectful reduced-motion guidance in the project wiki.
 
-## How it works
-
-The application currently consists of `index.html`. The page:
-
-1. Displays a loading screen while the embedded document begins loading.
-2. Loads the Quran PDF from the Internet Archive inside an `<iframe>`.
-3. Waits for the iframe `load` event.
-4. Hides the loading screen and starts the title animation.
-5. Reveals the PDF container after the title animation begins.
-
-The current PDF source is:
-
-`https://dn760104.eu.archive.org/0/items/MadinahQuran/ar_Mushaf_AlMadinah_N_G.pdf`
-
-Because the PDF is hosted externally, the reader depends on that service remaining available and allowing browser embedding. If the PDF host changes, update the iframe `src` in `index.html`.
-
-## Repository structure
+## Project files
 
 ```text
 quranpdf/
-├── index.html   # Main reader page, inline styles, and loading behavior
-├── README.md    # Project documentation
-└── wiki.html    # Detailed, browser-accessible project wiki
+├── index.html                 # Reader, styles, loading behavior, and PDF iframe
+├── wiki.html                  # Browser-friendly project guide
+├── assets/
+│   └── quranpdf-typing.svg   # Infinite animated typing banner used above
+└── README.md                  # Project documentation
 ```
 
-## Running locally
+## Run locally
 
-No installation is required for a basic preview.
-
-### Option 1: Open the file directly
-
-Download or clone the repository and open `index.html` in a modern browser. Some browser PDF and iframe behaviors can differ when files are opened with the `file://` protocol, so a local server is recommended for reliable testing.
-
-### Option 2: Use a local HTTP server
-
-With Python installed:
+Clone the repository and start any static web server in the project directory. Python is a convenient option:
 
 ```bash
+git clone https://github.com/Shahadah-studs/quranpdf.git
+cd quranpdf
 python3 -m http.server 8000
 ```
 
-Then visit:
+Then open <http://localhost:8000/>. The wiki is available at <http://localhost:8000/wiki.html>.
 
-http://localhost:8000/
+You can also open `index.html` directly, although an HTTP server is recommended because browsers handle embedded PDFs and local files differently.
 
-You can also use any static server, such as the VS Code Live Server extension or another local development server.
+## Deploy with GitHub Pages
 
-## Deployment with GitHub Pages
+1. Open **Settings → Pages** in the repository.
+2. Select the `main` branch as the deployment source.
+3. Select the repository root (`/`) as the folder.
+4. Save and wait for the deployment to finish.
+5. Visit <https://shahadah-studs.github.io/quranpdf/>.
 
-The repository is configured as a static HTML project and can be published with GitHub Pages:
-
-1. Open the repository **Settings** tab.
-2. Select **Pages** in the sidebar.
-3. Choose the `main` branch as the deployment source.
-4. Select the repository root (`/`) as the folder.
-5. Save the configuration and wait for the Pages deployment to finish.
-6. Open the published URL shown by GitHub.
-
-Every push to the configured source branch can trigger a new Pages deployment.
-
-## Customizing the reader
-
-### Change the title
-
-Edit the heading in `index.html`:
-
-```html
-<h1>QuranPDF - Madani Mushaf</h1>
-```
-
-If the title length changes significantly, review the typing animation timing and `steps(...)` value in the CSS.
+## Customize it
 
 ### Change the PDF
 
-Replace the iframe source:
+Update the `src` of `#quran-iframe` in `index.html`:
 
 ```html
 <iframe
@@ -100,65 +86,42 @@ Replace the iframe source:
 </iframe>
 ```
 
-Use a stable HTTPS URL. Confirm that the host permits the PDF to be displayed in an iframe and that you have permission to link to or distribute the document.
+Use a stable HTTPS URL and verify that the document host permits iframe embedding and that you have permission to link to or distribute the document.
 
-### Adjust the visual style
+### Change the title animation
 
-The page styles are currently inside `index.html`. Common customization points include:
-
-- `body` for the overall background and typography.
-- `header` for the top navigation area.
-- `.pdf-container` for reader size, spacing, and shadows.
-- `.loader-spinner` and `.loader-text` for the loading state.
-- `#d4af37` for the gold accent color.
-- The media-query section you add for additional mobile refinements.
-
-## Accessibility and usability notes
-
-- Keep meaningful `title` text on the iframe so assistive technology can identify the embedded document.
-- Maintain sufficient color contrast when changing the dark theme or gold accent.
-- Respect users who prefer reduced motion by considering a `prefers-reduced-motion` media query for the animations.
-- Keep a direct PDF link available if a browser or privacy extension blocks iframe embedding.
-- Test keyboard navigation and zoom behavior on both desktop and mobile devices.
+The live reader types its heading with the `.start-typing h1` animation in `index.html`. The README banner is a self-contained SVG whose typing and cursor animations repeat infinitely.
 
 ## Troubleshooting
 
-### The PDF does not appear
+### The PDF area is blank
 
-Check your network connection, confirm that the external PDF URL is still valid, and inspect the browser developer console for iframe or content-security errors. Try opening the PDF URL directly in a new tab.
+Open the PDF URL directly, check the browser console, and confirm that the external host is available and allows embedding. Some privacy tools and browsers may block third-party PDF frames.
 
-### The loading screen never disappears
+### The loader never disappears
 
-The loading screen is removed when the iframe emits its `load` event. If the external host blocks embedding or fails to respond, the event may not behave as expected. Consider adding a fallback link or a timeout message for production use.
+The reader hides the loader after the iframe fires its `load` event. If the remote PDF cannot be reached, add a fallback message or a direct “Open PDF” link to `index.html`.
 
-### The layout is too tall or too short
+### GitHub Pages shows an older version
 
-The reader height is calculated from the viewport. Adjust the `height` value on `.pdf-container` and test with browser toolbars, small screens, and device rotation.
-
-### GitHub Pages shows an old version
-
-Confirm that the latest commit reached the branch configured in **Settings → Pages**, then wait for the deployment to complete. Hard-refresh the browser or open the site in a private window to bypass cached assets.
+Confirm that Pages deploys from `main`, wait for deployment to complete, and hard-refresh the page or open it in a private window.
 
 ## Contributing
 
-1. Fork the repository or create a working branch.
-2. Make a focused change.
-3. Test the page in a current desktop and mobile browser.
-4. Verify that the PDF still loads and that the loading state behaves sensibly.
-5. Open a pull request with a clear description and screenshots when the visual design changes.
+1. Create a branch for your change.
+2. Keep the change focused and dependency-free.
+3. Test the reader on current desktop and mobile browsers.
+4. Verify that the PDF, loader, animations, and wiki link still work.
+5. Open a pull request with a clear description and screenshots for visual changes.
 
-Please avoid committing large generated files, private documents, credentials, or unrelated changes.
+Please do not commit credentials, private documents, or large generated files.
 
-## Content and hosting note
+## Content and licensing note
 
-This project embeds a document hosted by a third party. The repository does not currently contain a local copy of the PDF. Review the source's licensing, attribution, availability, and redistribution terms before changing the document source or adding downloaded files to the repository.
+The PDF is hosted by a third party and is not included in this repository. Before replacing, downloading, or redistributing it, review the source's copyright, license, attribution, and hosting terms. This repository currently does not include a software license.
 
-## License
+## Links
 
-No license file is currently included in this repository. Until a license is added, assume that the code is not granted for reuse beyond the permissions provided by applicable law. Add a license file if you want to define terms for copying, modification, and distribution.
-
-## Project wiki
-
-For a visual, browser-friendly guide to the project, open [`wiki.html`](./wiki.html) or visit:
-
-https://shahadah-studs.github.io/quranpdf/wiki.html
+- **Live reader:** <https://shahadah-studs.github.io/quranpdf/>
+- **Project wiki:** <https://shahadah-studs.github.io/quranpdf/wiki.html>
+- **Repository:** <https://github.com/Shahadah-studs/quranpdf>
