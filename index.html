@@ -5,550 +5,578 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuranPDF - Madani Mushaf</title>
     <style>
+        :root {
+            --bg-1: #05070d;
+            --bg-2: #0f172a;
+            --bg-3: #1d2033;
+            --ink: #edf6ff;
+            --cyan: #68f1ff;
+            --teal: #3be7c4;
+            --green: #8af7a6;
+            --purple: #d592ff;
+            --gold: #f5d78b;
+            --amber: #f7b267;
+            --glass: rgba(12, 16, 24, 0.72);
+            --border: rgba(104, 241, 255, 0.28);
+            --shadow-cyan: rgba(104, 241, 255, 0.45);
+            --shadow-green: rgba(59, 231, 196, 0.35);
+            --shadow-purple: rgba(213, 146, 255, 0.35);
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            background: radial-gradient(circle at top, #101a2e 0%, var(--bg-1) 35%, #060b12 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            color: var(--ink);
         }
 
         body {
-            background-color: #0a0a0a;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            color: #fff;
         }
 
-        /* ========================================== */
-        /*    NEON LOADING SCREEN - 25 SECONDS       */
-        /* ========================================== */
-        .loading-screen {
+        body::before {
+            content: "";
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a0f2e 50%, #0a0a0a 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255,255,255,0.02), rgba(255,255,255,0.01)),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0,
+                    transparent 60px,
+                    rgba(104, 241, 255, 0.03) 61px,
+                    transparent 62px
+                );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 20%, rgba(104, 241, 255, 0.12), transparent 30%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .loader {
+            position: fixed;
+            inset: 0;
             z-index: 9999;
-            opacity: 1;
-            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(4, 8, 14, 0.96), rgba(15, 19, 31, 0.96), rgba(9, 4, 17, 0.96));
+            transition: opacity 0.9s ease, visibility 0.9s ease;
             overflow: hidden;
         }
 
-        .loading-screen.hidden {
+        .loader.hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
 
-        /* Islamic Geometric Background Animation */
-        .geometric-bg {
+        .loader-bg {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            opacity: 0.15;
+            inset: 0;
             overflow: hidden;
+            opacity: 0.9;
         }
 
-        .geometric-pattern {
+        .mosque-glow {
             position: absolute;
-            width: 200px;
-            height: 200px;
-            border: 2px solid #00ff88;
-            transform: rotate(45deg);
-            animation: geometricRotate 20s linear infinite;
+            inset: 0;
+            background:
+                radial-gradient(circle at 50% 30%, rgba(104, 241, 255, 0.12), transparent 20%),
+                radial-gradient(circle at 50% 80%, rgba(59, 231, 196, 0.14), transparent 25%),
+                linear-gradient(180deg, rgba(104, 241, 255, 0.04), transparent 30%, rgba(59, 231, 196, 0.06));
         }
 
-        .geometric-pattern:nth-child(1) {
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-            border-color: #00ff88;
-        }
-
-        .geometric-pattern:nth-child(2) {
-            top: 60%;
-            right: 15%;
-            width: 150px;
-            height: 150px;
-            animation-delay: -5s;
-            border-color: #ff00ff;
-        }
-
-        .geometric-pattern:nth-child(3) {
-            bottom: 10%;
+        .mosque-pattern {
+            position: absolute;
             left: 50%;
-            width: 250px;
-            height: 250px;
-            animation-delay: -10s;
-            border-color: #00ccff;
+            top: 50%;
+            width: min(65vw, 700px);
+            height: min(65vw, 700px);
+            transform: translate(-50%, -50%);
+            opacity: 0.13;
+            background-image:
+                linear-gradient(rgba(104, 241, 255, 0.35) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(104, 241, 255, 0.35) 1px, transparent 1px),
+                radial-gradient(circle at center, rgba(59, 231, 196, 0.45) 0, rgba(59, 231, 196, 0.08) 38%, transparent 55%);
+            background-size: 42px 42px, 42px 42px, 100% 100%;
+            mask-image: radial-gradient(circle at center, black 30%, transparent 75%);
+            animation: patternFloat 18s ease-in-out infinite alternate;
         }
 
-        /* Islamic Star/Moon Elements */
-        .islamic-element {
+        .moon {
             position: absolute;
-            font-size: 3rem;
-            opacity: 0.2;
-            animation: floatIslamicElement 6s ease-in-out infinite;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            right: 18%;
+            top: 16%;
+            background: radial-gradient(circle at 35% 35%, #fffef5 0%, #f0f2ff 20%, #dfe9ff 35%, rgba(223, 233, 255, 0.35) 60%, transparent 100%);
+            box-shadow: 0 0 35px rgba(255,255,255,0.4), 0 0 55px rgba(104, 241, 255, 0.35);
+            opacity: 0.85;
+            animation: moonPulse 7s ease-in-out infinite;
         }
 
-        .islamic-element:nth-child(4) {
-            top: 15%;
-            left: 20%;
-            animation-delay: 0s;
-        }
-
-        .islamic-element:nth-child(5) {
-            top: 70%;
-            right: 10%;
-            animation-delay: 1s;
-            font-size: 2.5rem;
-        }
-
-        .islamic-element:nth-child(6) {
-            bottom: 20%;
-            left: 5%;
-            animation-delay: 2s;
-            font-size: 2rem;
-        }
-
-        /* Neon Glowing Arabic Text */
-        .arabic-text {
-            font-size: 4rem;
-            font-family: 'Traditional Arabic', 'Segoe UI', sans-serif;
-            margin-bottom: 40px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            position: relative;
-            z-index: 10;
-            animation: neonGlow 2s ease-in-out infinite alternate;
-        }
-
-        .neon-cyan {
-            color: #00ffff;
-            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #0088ff;
-        }
-
-        .neon-magenta {
-            color: #ff00ff;
-            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff0088;
-        }
-
-        .neon-lime {
-            color: #00ff88;
-            text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88, 0 0 40px #00ff00;
-        }
-
-        /* Neon Progress Container */
-        .progress-container {
-            width: 300px;
+        .star {
+            position: absolute;
+            width: 8px;
             height: 8px;
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3), inset 0 0 10px rgba(0, 255, 136, 0.1);
-            border: 2px solid rgba(0, 255, 136, 0.3);
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,255,255,0.9), 0 0 18px rgba(104, 241, 255, 0.7);
+            animation: starTwinkle 3s ease-in-out infinite alternate;
+        }
+
+        .star:nth-child(1) { left: 18%; top: 24%; animation-delay: 0.2s; }
+        .star:nth-child(2) { left: 30%; top: 18%; animation-delay: 1.2s; }
+        .star:nth-child(3) { right: 26%; top: 28%; animation-delay: 0.6s; }
+        .star:nth-child(4) { right: 42%; top: 18%; animation-delay: 1.8s; }
+        .star:nth-child(5) { left: 58%; bottom: 20%; animation-delay: 0.9s; }
+        .star:nth-child(6) { right: 18%; bottom: 22%; animation-delay: 1.4s; }
+
+        .loader-card {
             position: relative;
-            z-index: 10;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            text-align: center;
         }
 
-        /* Neon Progress Bar with Multiple Colors */
-        .progress-bar {
+        .brand-mark {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            font-family: 'Traditional Arabic', 'Segoe UI', sans-serif;
+            font-weight: 700;
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            letter-spacing: 3px;
+            line-height: 1;
+            filter: drop-shadow(0 0 25px rgba(104, 241, 255, 0.65));
+        }
+
+        .brand-mark span {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--cyan), var(--gold), var(--purple), var(--teal));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: calligraphyGlow 2.5s ease-in-out infinite alternate;
+        }
+
+        .brand-subtitle {
+            font-size: 0.9rem;
+            letter-spacing: 0.38rem;
+            text-transform: uppercase;
+            color: rgba(237, 246, 255, 0.8);
+            text-shadow: 0 0 12px rgba(104, 241, 255, 0.4);
+        }
+
+        .progress-wrap {
+            width: min(82vw, 420px);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .progress-bar-rail {
+            position: relative;
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(104, 241, 255, 0.2);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.45), 0 0 20px rgba(104, 241, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            position: absolute;
+            inset: 0 auto 0 0;
             width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #00ff88 0%, #00ffff 25%, #ff00ff 50%, #00ffff 75%, #00ff88 100%);
-            border-radius: 10px;
-            box-shadow: 0 0 20px #00ff88, 0 0 10px #00ffff;
-            background-size: 200% 100%;
-            animation: neonFill 25s cubic-bezier(0.1, 0.8, 0.1, 1) forwards;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--green), var(--cyan), var(--purple), var(--gold), var(--teal));
+            box-shadow: 0 0 18px rgba(104, 241, 255, 0.7), 0 0 28px rgba(59, 231, 196, 0.6);
+            background-size: 220% 100%;
+            animation: progressGlow 25s linear forwards;
         }
 
-        .loader-text {
-            color: #00ffff;
-            font-size: 0.95rem;
-            margin-top: 25px;
-            letter-spacing: 2px;
+        .loading-status {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            color: rgba(237, 246, 255, 0.82);
+            font-size: 0.82rem;
+            letter-spacing: 0.18rem;
             text-transform: uppercase;
             font-weight: 600;
-            text-shadow: 0 0 10px #00ffff;
-            position: relative;
-            z-index: 10;
-            animation: textBlink 1s ease-in-out infinite;
         }
 
-        /* Loading percentage counter */
-        .loader-percent {
-            color: #ff00ff;
-            font-size: 1.2rem;
-            margin-top: 12px;
-            font-weight: bold;
-            text-shadow: 0 0 10px #ff00ff;
-            position: relative;
-            z-index: 10;
+        .loading-status .percent {
+            color: var(--gold);
+            text-shadow: 0 0 12px rgba(245, 215, 139, 0.6);
         }
 
-        /* ========================================== */
-        /*         NEON HEADER DESIGN                 */
-        /* ========================================== */
-        header {
+        .loading-status .status-text {
+            color: var(--cyan);
+            text-shadow: 0 0 10px rgba(104, 241, 255, 0.45);
+        }
+
+        .header {
+            position: relative;
+            z-index: 2;
             width: 100%;
-            background: linear-gradient(180deg, rgba(10, 10, 10, 0.95) 0%, rgba(20, 10, 35, 0.9) 100%);
-            padding: 20px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2), inset 0 -1px 0 rgba(0, 255, 136, 0.1);
-            border-bottom: 2px solid rgba(0, 255, 136, 0.3);
+            padding: 22px 0 18px;
+            background: linear-gradient(180deg, rgba(8, 13, 21, 0.92), rgba(18, 20, 31, 0.82));
+            border-bottom: 1px solid rgba(104, 241, 255, 0.16);
+            box-shadow: 0 10px 35px rgba(11, 16, 25, 0.3), inset 0 -1px 0 rgba(104, 241, 255, 0.1);
             backdrop-filter: blur(10px);
         }
 
-        .typing-container {
+        .nav-bar {
+            width: min(1200px, 95%);
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title-box {
             display: inline-block;
+            padding: 12px 18px;
+            border: 1px solid rgba(104, 241, 255, 0.18);
+            border-radius: 16px;
+            background: rgba(10, 18, 29, 0.22);
+            box-shadow: 0 0 18px rgba(104, 241, 255, 0.12);
         }
 
         h1 {
-            margin: 0;
-            font-size: 2rem;
-            background: linear-gradient(90deg, #00ffff 0%, #00ff88 25%, #ff00ff 50%, #00ff88 75%, #00ffff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: clamp(1.2rem, 2vw, 2rem);
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 0.18rem;
             white-space: nowrap;
             overflow: hidden;
             width: 0;
-            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            display: inline-block;
+            background: linear-gradient(90deg, var(--cyan), var(--teal), var(--purple), var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 18px rgba(104, 241, 255, 0.18);
         }
 
         .start-typing h1 {
-            animation: 
-                neonTyping 3s steps(28) forwards,
-                neonBlink 0.75s step-end infinite;
+            animation: typingReveal 2.8s steps(28, end) forwards, caretBlink 0.8s step-end infinite;
         }
 
-        /* ========================================== */
-        /*      NEON PDF CONTAINER DESIGN            */
-        /* ========================================== */
-        .pdf-container {
-            width: 95%;
-            max-width: 1200px;
-            height: calc(100vh - 200px);
-            margin: 15px auto;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a0f2e 100%);
-            border-radius: 15px;
+        .viewer {
+            position: relative;
+            z-index: 2;
+            width: min(1200px, 95%);
+            height: calc(100vh - 190px);
+            margin: 16px auto 22px;
+            background: linear-gradient(180deg, rgba(12, 14, 16, 0.9), rgba(18, 16, 30, 0.9));
+            border: 1px solid rgba(104, 241, 255, 0.18);
+            border-radius: 22px;
             overflow: hidden;
-            transform: translateY(50px);
             opacity: 0;
-            transition: transform 1s cubic-bezier(0.1, 1, 0.1, 1), opacity 1s;
-            border: 2px solid rgba(0, 255, 136, 0.3);
-            box-shadow: 0 0 40px rgba(0, 255, 136, 0.15), inset 0 0 20px rgba(0, 255, 136, 0.05);
+            transform: translateY(48px) scale(0.985);
+            box-shadow: 0 0 45px rgba(104, 241, 255, 0.08), inset 0 0 30px rgba(59, 231, 196, 0.04);
+            transition: opacity 1s ease, transform 1s cubic-bezier(0.2, 0.9, 0.2, 1);
         }
 
-        .show-pdf .pdf-container {
-            transform: translateY(0);
+        .show-pdf .viewer {
             opacity: 1;
-            box-shadow: 0 0 60px rgba(0, 255, 136, 0.25), inset 0 0 30px rgba(0, 255, 136, 0.1);
-            animation: neonPulse 4s ease-in-out infinite alternate;
+            transform: translateY(0) scale(1);
+            animation: viewerGlow 4s ease-in-out infinite alternate;
         }
 
         iframe {
             width: 100%;
             height: 100%;
-            border: none;
-            background: #0a0a0a;
+            border: 0;
+            background: #050b12;
         }
 
-        /* ========================================== */
-        /*         NEON FOOTER/NAVIGATION            */
-        /* ========================================== */
-        .footer-nav {
-            color: #00ff88;
-            text-align: center;
+        .wiki-link-wrap {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 14px;
+        }
+
+        .wiki-button {
+            display: inline-block;
+            padding: 12px 22px;
+            border-radius: 999px;
+            border: 1px solid rgba(59, 231, 196, 0.45);
+            background: linear-gradient(135deg, rgba(59, 231, 196, 0.12), rgba(104, 241, 255, 0.08));
+            box-shadow: 0 0 18px rgba(59, 231, 196, 0.14);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .wiki-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 28px rgba(59, 231, 196, 0.28);
+            border-color: rgba(104, 241, 255, 0.72);
+        }
+
+        .wiki-button a {
+            color: var(--teal);
             text-decoration: none;
-            padding: 10px 20px;
-            margin-top: 10px;
-            border: 2px solid #00ff88;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-shadow: 0 0 10px #00ff88;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.18rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-shadow: 0 0 12px rgba(59, 231, 196, 0.5);
         }
 
-        .footer-nav:hover {
-            background: rgba(0, 255, 136, 0.1);
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
-            text-shadow: 0 0 20px #00ff88;
-        }
-
-        .footer-nav a {
-            color: #00ff88;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        /* ========================================== */
-        /*         NEON AUDIO PLAYER BAR             */
-        /* ========================================== */
-        .audio-player-container {
+        .audio-player {
             position: fixed;
-            bottom: 0;
             left: 0;
+            bottom: 0;
             width: 100%;
-            background: linear-gradient(0deg, rgba(10, 10, 10, 0.95) 0%, rgba(20, 10, 35, 0.9) 100%);
-            border-top: 2px solid rgba(0, 255, 136, 0.3);
-            padding: 15px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 -10px 40px rgba(0, 255, 136, 0.2);
-            z-index: 100;
+            z-index: 10;
             transform: translateY(100%);
-            transition: transform 0.8s cubic-bezier(0.1, 1, 0.1, 1);
-            backdrop-filter: blur(10px);
+            transition: transform 0.7s ease;
+            background: linear-gradient(180deg, rgba(10, 12, 19, 0.78), rgba(25, 18, 35, 0.9));
+            border-top: 1px solid rgba(104, 241, 255, 0.15);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 -12px 24px rgba(0,0,0,0.2);
+            padding: 16px 0 18px;
         }
 
-        .show-pdf .audio-player-container {
+        .show-pdf .audio-player {
             transform: translateY(0);
         }
 
-        .audio-title {
-            color: #00ffff;
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px #00ffff;
-            font-weight: 600;
+        .audio-box {
+            width: min(820px, 90%);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
 
-        .audio-title span {
-            color: #ff00ff;
-            font-weight: bold;
-            text-shadow: 0 0 10px #ff00ff;
+        .audio-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+            color: rgba(237, 246, 255, 0.75);
+        }
+
+        .audio-label span {
+            color: var(--cyan);
+            text-shadow: 0 0 10px rgba(104, 241, 255, 0.7);
         }
 
         audio {
-            width: 90%;
-            max-width: 800px;
+            width: 100%;
             height: 36px;
-            outline: none;
-            border-radius: 10px;
+            border-radius: 999px;
+            filter: drop-shadow(0 0 10px rgba(104, 241, 255, 0.14));
         }
 
-        audio::-webkit-media-controls-panel {
-            background-color: rgba(30, 30, 30, 0.7);
-        }
-        audio::-webkit-media-controls-current-time-display,
-        audio::-webkit-media-controls-time-remaining-display {
-            color: #00ff88;
+        @keyframes progressGlow {
+            0% { width: 0%; background-position: 0% center; }
+            100% { width: 100%; background-position: 200% center; }
         }
 
-        /* ========================================== */
-        /*         KEYFRAME ANIMATIONS               */
-        /* ========================================== */
-        @keyframes neonFill {
-            0% { 
-                width: 0%; 
-                background-position: 0% center;
+        @keyframes calligraphyGlow {
+            0% {
+                filter: drop-shadow(0 0 10px rgba(104, 241, 255, 0.5));
+                opacity: 0.8;
             }
-            100% { 
-                width: 100%; 
-                background-position: 100% center;
-            }
-        }
-
-        @keyframes neonGlow {
-            0% { 
-                text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
-                opacity: 0.7;
-            }
-            100% { 
-                text-shadow: 0 0 20px currentColor, 0 0 40px currentColor, 0 0 60px currentColor;
+            100% {
+                filter: drop-shadow(0 0 24px rgba(104, 241, 255, 0.9));
                 opacity: 1;
             }
         }
 
-        @keyframes neonTyping {
+        @keyframes patternFloat {
+            0% { transform: translate(-50%, -50%) scale(0.96) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) scale(1.08) rotate(12deg); }
+        }
+
+        @keyframes moonPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(255,255,255,0.35), 0 0 55px rgba(104, 241, 255, 0.25); }
+            50% { transform: scale(1.08); box-shadow: 0 0 38px rgba(255,255,255,0.5), 0 0 68px rgba(104, 241, 255, 0.4); }
+        }
+
+        @keyframes starTwinkle {
+            0% { opacity: 0.3; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1.4); }
+        }
+
+        @keyframes typingReveal {
             from { width: 0; }
             to { width: 100%; }
         }
 
-        @keyframes neonBlink {
-            from, to { border-color: transparent; }
-            50% { border-color: #00ffff; }
+        @keyframes caretBlink {
+            from, to { border-right-color: transparent; }
+            50% { border-right-color: rgba(104, 241, 255, 0.8); }
         }
 
-        @keyframes neonPulse {
-            0% { 
-                box-shadow: 0 0 40px rgba(0, 255, 136, 0.15), inset 0 0 20px rgba(0, 255, 136, 0.05);
-            }
-            100% { 
-                box-shadow: 0 0 80px rgba(0, 255, 136, 0.35), inset 0 0 40px rgba(0, 255, 136, 0.15);
-            }
+        @keyframes viewerGlow {
+            0% { box-shadow: 0 0 28px rgba(104, 241, 255, 0.1), inset 0 0 25px rgba(59, 231, 196, 0.05); }
+            100% { box-shadow: 0 0 42px rgba(104, 241, 255, 0.2), inset 0 0 30px rgba(59, 231, 196, 0.12); }
         }
 
-        @keyframes textBlink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
+        @media (max-width: 700px) {
+            .header {
+                padding: 18px 0;
+            }
 
-        @keyframes geometricRotate {
-            from { transform: rotate(45deg); }
-            to { transform: rotate(405deg); }
-        }
+            .title-box {
+                padding: 10px 14px;
+                border-radius: 12px;
+            }
 
-        @keyframes floatIslamicElement {
-            0%, 100% { 
-                transform: translateY(0px) translateX(0px);
+            h1 {
+                letter-spacing: 0.08rem;
             }
-            25% { 
-                transform: translateY(-20px) translateX(10px);
+
+            .viewer {
+                height: calc(100vh - 210px);
             }
-            50% { 
-                transform: translateY(-40px) translateX(-10px);
+
+            .brand-mark {
+                gap: 8px;
             }
-            75% { 
-                transform: translateY(-20px) translateX(10px);
+
+            .loading-status {
+                font-size: 0.68rem;
+                letter-spacing: 0.12rem;
             }
         }
     </style>
 </head>
 <body>
-
-    <!-- NEON Loading Screen with Islamic Animations -->
-    <div id="loader" class="loading-screen">
-        <!-- Islamic Geometric Background -->
-        <div class="geometric-bg">
-            <div class="geometric-pattern"></div>
-            <div class="geometric-pattern"></div>
-            <div class="geometric-pattern"></div>
-            <div class="islamic-element">☪</div>
-            <div class="islamic-element">🌙</div>
-            <div class="islamic-element">✡</div>
+    <div id="loader" class="loader">
+        <div class="loader-bg">
+            <div class="mosque-glow"></div>
+            <div class="mosque-pattern"></div>
+            <div class="moon"></div>
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
+            <span class="star"></span>
         </div>
 
-        <!-- Neon Neon Loading Content -->
-        <div class="arabic-text neon-cyan">ق</div>
-        <div class="arabic-text neon-magenta">ر</div>
-        <div class="arabic-text neon-lime">آ</div>
-        <div class="arabic-text neon-cyan">ن</div>
-        
-        <div class="progress-container">
-            <div class="progress-bar"></div>
-        </div>
-        
-        <div class="loader-text">Loading Quranic Experience</div>
-        <div class="loader-percent">
-            <span id="percent-value">0</span>%
+        <div class="loader-card">
+            <div class="brand-mark" aria-label="Quran logo">
+                <span>ال</span>
+                <span>ق</span>
+                <span>ر</span>
+                <span>آ</span>
+                <span>ن</span>
+            </div>
+            <div class="brand-subtitle">Madani Mushaf</div>
+
+            <div class="progress-wrap">
+                <div class="progress-bar-rail">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+                <div class="loading-status">
+                    <span class="status-text">Preparing</span>
+                    <span class="percent" id="percent">0%</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Neon Header -->
-    <header id="main-header">
-        <div class="typing-container">
-            <h1>QuranPDF - Madani Mushaf</h1>
+    <header class="header" id="main-header">
+        <div class="nav-bar">
+            <div class="title-box">
+                <h1>QuranPDF - Madani Mushaf</h1>
+            </div>
         </div>
     </header>
 
-    <!-- PDF Viewer Container -->
-    <div id="content-viewer" class="pdf-container">
-        <iframe id="quran-iframe" src="https://dn760104.eu.archive.org/0/items/MadinahQuran/ar_Mushaf_AlMadinah_N_G.pdf"></iframe>
+    <div id="content-viewer" class="viewer">
+        <iframe id="quran-iframe" src="https://dn760104.eu.archive.org/0/items/MadinahQuran/ar_Mushaf_AlMadinah_N_G.pdf" title="Quran PDF Viewer"></iframe>
     </div>
 
-    <!-- Neon Navigation Footer -->
-    <div style="text-align: center; margin-bottom: 20px;">
-        <button class="footer-nav">
-            <a href="wiki.html">Wiki</a>
-        </button>
+    <div class="wiki-link-wrap">
+        <div class="wiki-button"><a href="wiki.html">Wiki</a></div>
     </div>
 
-    <!-- Audio Player Container -->
-    <div class="audio-player-container">
-        <div class="audio-title">
-            Quranic <span>Audio</span>
+    <div class="audio-player">
+        <div class="audio-box">
+            <div class="audio-label">Quranic <span>Audio</span></div>
+            <audio controls></audio>
         </div>
-        <audio controls></audio>
     </div>
 
-    <!-- Script Engine -->
     <script>
         const iframe = document.getElementById('quran-iframe');
         const loader = document.getElementById('loader');
         const body = document.body;
-        const progressBar = document.querySelector('.progress-bar');
-        const percentValue = document.getElementById('percent-value');
+        const fill = document.getElementById('progress-fill');
+        const percent = document.getElementById('percent');
 
-        // Simulate 25-second loading with percentage counter
-        let currentPercent = 0;
-        const loadingInterval = setInterval(() => {
-            if (currentPercent < 95) {
-                currentPercent += Math.random() * 4;
-                if (currentPercent > 95) currentPercent = 95;
-                percentValue.textContent = Math.floor(currentPercent);
-            }
-        }, 100);
+        let current = 0;
+        const update = () => {
+            current = Math.min(current + (Math.random() * 1.8 + 0.9), 99);
+            fill.style.width = current + '%';
+            percent.textContent = Math.floor(current) + '%';
+        };
 
-        // Handle iframe load completion
+        const timer = setInterval(update, 220);
+
         iframe.addEventListener('load', () => {
-            clearInterval(loadingInterval);
-            currentPercent = 100;
-            percentValue.textContent = '100';
-            
-            // Set progress bar to full
-            progressBar.style.animation = 'none';
-            progressBar.style.width = '100%';
+            clearInterval(timer);
+            fill.style.width = '100%';
+            percent.textContent = '100%';
 
-            // Hide loading screen after 25 seconds or when loaded
             setTimeout(() => {
                 loader.classList.add('hidden');
-                
-                // Trigger typing animation for header
-                setTimeout(() => {
-                    body.classList.add('start-typing');
-                }, 300);
-
-                // Show PDF container
-                setTimeout(() => {
-                    body.classList.add('show-pdf');
-                }, 3000);
-
             }, 500);
+
+            setTimeout(() => {
+                body.classList.add('start-typing');
+            }, 300);
+
+            setTimeout(() => {
+                body.classList.add('show-pdf');
+            }, 2200);
         });
 
-        // Force 25-second loading screen minimum
         setTimeout(() => {
             if (!loader.classList.contains('hidden')) {
-                clearInterval(loadingInterval);
-                currentPercent = 100;
-                percentValue.textContent = '100';
-                progressBar.style.animation = 'none';
-                progressBar.style.width = '100%';
-                
+                clearInterval(timer);
+                fill.style.width = '100%';
+                percent.textContent = '100%';
                 loader.classList.add('hidden');
-                
-                setTimeout(() => {
-                    body.classList.add('start-typing');
-                }, 300);
-
-                setTimeout(() => {
-                    body.classList.add('show-pdf');
-                }, 3000);
+                setTimeout(() => body.classList.add('start-typing'), 250);
+                setTimeout(() => body.classList.add('show-pdf'), 2200);
             }
         }, 25000);
     </script>
-
 </body>
 </html>
